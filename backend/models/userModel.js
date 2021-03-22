@@ -1,4 +1,5 @@
 import mongoose from 'mongoose'
+import bcrypt from 'bcryptjs'
 
 const UserSchema = mongoose.Schema({
     name: {
@@ -22,6 +23,7 @@ const UserSchema = mongoose.Schema({
 }, {
      timestamps: true
 })
+
 
 const User = mongoose.model('User', UserSchema)
 

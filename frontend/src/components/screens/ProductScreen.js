@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import { Link} from 'react-router-dom'
-import {Row, Col, Button, Image, ListGroup, Form } from 'react-bootstrap'
+import {Row, Col, Button, Image, Card, ListGroup, Form } from 'react-bootstrap'
 import Rating from '../Rating'
 import { listProductDetails} from '../../actions/productAction'
 import {useDispatch, useSelector } from 'react-redux'
@@ -87,7 +87,7 @@ const ProductScreen = ({match, history}) => {
 
                            <ListGroup.Item>
                                <Button
-                               onClick={()=> addtoCartHandler()}
+                               onClick={addtoCartHandler}
                                className='btn btn-info btn-block' disabled={product && product.countInStock === 0}>
                                    Add to Cart
                                </Button>
@@ -102,3 +102,4 @@ const ProductScreen = ({match, history}) => {
 }
 
 export default ProductScreen
+

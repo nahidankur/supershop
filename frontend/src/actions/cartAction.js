@@ -1,6 +1,5 @@
 import { CART_ADD_ITEM, CART_REMOVE_ITEM} from '../constants/constants'
 import axios from 'axios'
-import { toast} from 'react-toastify'
 
 export const addTocart = (id, qty)=> async (dispatch, getState)=>{
     const {data} = await axios.get(`/api/products/${id}`)
@@ -13,12 +12,22 @@ export const addTocart = (id, qty)=> async (dispatch, getState)=>{
             image: data.image,
             price: data.price,
             countInStock: data.countInStock,
-            qty: data.qty
+            qty
         }
     })
-    toast.success("MY SUCCESS")
+
 
     localStorage.setItem('cartItems', JSON.stringify(getState().cart.cartItems))
 
+
+}
+
+export const removeCart = (id)=> (dispatch, getState)=>{
+    dispatch({
+        type: CART_REMOVE_ITEM,
+        payload: id
+    })
+
+    localStorage.setItem('cartItems', JSON.stringify(getState().cart.cartItems))
 
 }
