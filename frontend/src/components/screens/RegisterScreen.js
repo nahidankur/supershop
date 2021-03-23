@@ -113,7 +113,7 @@ pauseOnHover
           type="password" placeholder="Enter Password Again"  />
         </Form.Group>
         <Button variant="primary" type="submit">
-          Submit
+          Register
         </Button>
       </Form>
             </Col>

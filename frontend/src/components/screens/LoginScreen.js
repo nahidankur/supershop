@@ -64,7 +64,7 @@ const LoginScreen = ({location, history}) => {
           type="password" placeholder="Enter Password" required />
         </Form.Group>
         <Button variant="primary" type="submit">
-          Submit
+          Login
         </Button>
       </Form>
             </Col>
