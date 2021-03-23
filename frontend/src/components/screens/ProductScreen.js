@@ -6,6 +6,9 @@ import { listProductDetails} from '../../actions/productAction'
 import {useDispatch, useSelector } from 'react-redux'
 import Loader from '../Loader'
 import Message from '../Message'
+import { ToastContainer } from "react-toastify"
+import "react-toastify/dist/ReactToastify.css"
+import { toast } from "react-toastify"
 
 
 const ProductScreen = ({match, history}) => {
@@ -26,6 +29,16 @@ const ProductScreen = ({match, history}) => {
 
     return (
        <>
+                       <ToastContainer
+     position="bottom-left"
+     autoClose={5000}
+     hideProgressBar={false}
+      newestOnTop={false}
+     closeOnClick
+      rtl={false}
+      pauseOnFocusLoss
+      draggable
+      pauseOnHover/>
        <Link className='btn btn-primary my-3' to='/'>
            Go Back
        </Link>

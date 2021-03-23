@@ -25,7 +25,7 @@ router.post('/register',[
      try{
         let user = await User.findOne({email})
         if(user){
-            return res.status(400).json({ errors : [{ msg: 'User Already Registered' }] })
+            return res.status(400).json({ errors : [{ msg: 'The Email is Already Taken' }] })
         }
 
         user = new User({

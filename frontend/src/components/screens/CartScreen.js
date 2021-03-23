@@ -4,6 +4,9 @@ import { useDispatch, useSelector} from 'react-redux'
 import {Row, Col, Card, ListGroup, Image, Form, Button } from 'react-bootstrap'
 import Message from '../Message'
 import {Link } from 'react-router-dom'
+import { ToastContainer } from "react-toastify"
+import "react-toastify/dist/ReactToastify.css"
+import { toast } from "react-toastify"
 
 const CartScreen = ({match, history, location}) => {
     const productId = match.params.id
@@ -30,6 +33,16 @@ const CartScreen = ({match, history, location}) => {
 
     return (
        <Row>
+                <ToastContainer
+     position="bottom-left"
+     autoClose={5000}
+     hideProgressBar={false}
+      newestOnTop={false}
+     closeOnClick
+      rtl={false}
+      pauseOnFocusLoss
+      draggable
+      pauseOnHover/>
            <Col md={8} >
                <h1>Shopping Cart</h1>
                {cartItems.length === 0 ? <Message>Your cart is empty <Link to='/'> Go Back </Link> </Message> : <ListGroup variant='flush'>
