@@ -5,12 +5,13 @@ import thunk from 'redux-thunk'
 import { productList, productDetails} from './reducers/productReducer'
 import { cartReducer} from './reducers/cartReducer'
 import { userLogin, userRegister, userDetails, userUpdateProfile} from './reducers/userReducers'
+import { orderCreate, orderDetails, orderPay} from './reducers/orderReducer'
 
 const reducer = combineReducers({
     productList, productDetails,
     cart: cartReducer,
     userLogin, userRegister, userDetails,
-    userUpdateProfile
+    userUpdateProfile, orderCreate, orderDetails, orderPay
 })
 
 const cartItemsFromStorage = localStorage.getItem('cartItems') ? JSON.parse(
@@ -24,11 +25,16 @@ const userInfoFromStorage = localStorage.getItem('userInfo') ? JSON.parse(
 const shippingAddressFromStorage = localStorage.getItem('shippingAddress') ? JSON.parse(
     localStorage.getItem('shippingAddress')
 ) : {}
+const paymentAddressFromStorage = localStorage.getItem('paymentMethod') ? JSON.parse(
+    localStorage.getItem('paymentMethod')
+) : null
 
 
 const initialState = { 
     cart: { cartItems: cartItemsFromStorage,
-            shippingAddress: shippingAddressFromStorage},
+            shippingAddress: shippingAddressFromStorage,
+            paymentMethod: paymentAddressFromStorage
+        },
     userLogin: { userInfo: userInfoFromStorage }
  }
 const middleware = [thunk]
