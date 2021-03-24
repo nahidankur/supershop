@@ -206,7 +206,16 @@ export const getUserDetails = (id) => async (dispatch, getState) => {
         type: USER_UPDATE_PROFILE_SUCCESS,
         payload: data,
       })
-      
+      toast.success('Profile Updated Successfully!', {
+        position: "bottom-left",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        })
+
 
       dispatch({
           type: USER_LOGIN_SUCCESS,

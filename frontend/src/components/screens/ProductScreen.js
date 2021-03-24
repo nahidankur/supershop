@@ -29,7 +29,7 @@ const ProductScreen = ({match, history}) => {
 
     return (
        <>
-                       <ToastContainer
+    <ToastContainer
      position="bottom-left"
      autoClose={5000}
      hideProgressBar={false}

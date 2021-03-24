@@ -307,43 +307,87 @@ router.get('/profile',auth, async (req, res)=>{
 
 
 
-// route /api/auth/profile
-// Update User Profile
-// Access: Private
-router.put('/profile',auth, async (req, res)=>{
-    try{
-    const user = await User.findById(req.user._id)
-      if(user){
-          user.name = req.body.name || user.name
-          user.email = req.body.email || user.email
+// // route /api/auth/profile
+// // Update User Profile
+// // Access: Private
+// router.put('/profile',auth, async (req, res)=>{
+//     try{
+//     const user = await User.findById(req.user._id)
+//       if(user){
+//           user.name = req.body.name || user.name
+//           user.email = req.body.email || user.email
 
-          if(req.body.password){
-             const givenpassword = req.body.password
-             const salt = await bcrypt.genSalt(10)
-             user.password = await bcrypt.hash(givenpassword, salt)
-          }
+//           if(req.body.password){
+//              const givenpassword = req.body.password
+//              const salt = await bcrypt.genSalt(10)
+//              user.password = await bcrypt.hash(givenpassword, salt)
+//           }
          
 
-          const updatedUser = await user.save()
+//           const updatedUser = await user.save()
 
-          res.json({
-            _id: updatedUser._id,
-            name: updatedUser.name,
-            email: updatedUser.email,
-            isAdmin: updatedUser.isAdmin,
-            token: generateToken(updatedUser._id),
-          })
+//           res.json({
+//             _id: updatedUser._id,
+//             name: updatedUser.name,
+//             email: updatedUser.email,
+//             isAdmin: updatedUser.isAdmin,
+//             token: generateToken(updatedUser._id),
+//           })
 
-      } else{
-        res.status(400).json({ errors : [{ msg : 'No User Found!' }] })
-      }
-    } catch(err){
-     console.error(err)
-     res.status(500).json({ msg: 'Server Error' })
- }
+//       } else{
+//         res.status(400).json({ errors : [{ msg : 'No User Found!' }] })
+//       }
+//     } catch(err){
+//      console.error(err)
+//      res.status(500).json({ msg: 'Server Error' })
+//  }
  
- })
+//  })
 
+ // route /api/auth/profile
+// Update User Profile
+// Access: Private
+router.put('/profile', [auth, [
+    body('password', 'Password must be at least 6 character').isLength({min: 6})
+]], async (req, res)=>{
+    const errors = validationResult(req)
+    if(!errors.isEmpty()){
+        return res.status(400).json({ errors: errors.array() })
+     }
+      
+     try{
+        const user = await User.findById(req.user._id)
+        if(user){
+            user.name = req.body.name || user.name
+            user.email = req.body.email || user.email
+  
+            if(req.body.password){
+               const givenpassword = req.body.password
+               const salt = await bcrypt.genSalt(10)
+               user.password = await bcrypt.hash(givenpassword, salt)
+            }
+           
+  
+            const updatedUser = await user.save()
+  
+            res.json({
+              _id: updatedUser._id,
+              name: updatedUser.name,
+              email: updatedUser.email,
+              isAdmin: updatedUser.isAdmin,
+              token: generateToken(updatedUser._id),
+            })
+  
+        } else{
+          res.status(400).json({ errors : [{ msg : 'No User Found!' }] })
+        }
+
+     }catch(err){
+        console.error(err)
+        res.status(500).json({ msg: 'Server Error' })
+    }
+
+})
 
 
 

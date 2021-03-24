@@ -18,8 +18,6 @@ const ProfileScreen = ({ location, history }) => {
     const [password, setPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
     const [message, setMessage] = useState(null)
-    const [succ, setSucc] = useState(null)
-  
     const dispatch = useDispatch()
   
     const userDetails = useSelector((state) => state.userDetails)
@@ -64,28 +62,17 @@ const ProfileScreen = ({ location, history }) => {
         dispatch(updateUserProfile({
           _id: user._id, name, email, password
         }))
-        setSucc(toast.success('Profile Updated Successfully!', {
-          position: "bottom-left",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          })) 
+
       }
     }
     return (
       <Row>
         <Col md={3}>
           <h2>User Profile</h2>
-          {message &&  <ToastContainer position="bottom-left" autoClose={5000} 
+          { loading && <Loader />}
+          <ToastContainer position="bottom-left" autoClose={5000} 
             hideProgressBar={false} newestOnTop={false} 
-            closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover /> }
-               {succ &&  <ToastContainer position="bottom-left" autoClose={5000} 
-            hideProgressBar={false} newestOnTop={false} 
-            closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover /> }
-          {success && <Message variant='succcess'>Profile Updated</Message>}
+            closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover /> 
             <Form onSubmit={submitHandler}>
               <Form.Group controlId='name'>
                 <Form.Label>Name</Form.Label>
