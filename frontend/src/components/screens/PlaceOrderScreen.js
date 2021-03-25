@@ -10,6 +10,7 @@ import { toast } from "react-toastify"
 import CheckOutStep from '../CheckOutStep'
 import Message from '../Message'
 import { createOrder} from '../../actions/orderAction'
+import { ORDER_DETAILS_RESET } from '../../constants/constants'
 
 const PlaceOrderScreen = ({history}) => {
     const dispatch  = useDispatch()
@@ -21,6 +22,7 @@ const PlaceOrderScreen = ({history}) => {
     useEffect(()=>{
         if(success){
           history.push(`/order/${order._id}`)
+          dispatch({type: ORDER_DETAILS_RESET})
         }
     }, [success, history])
     
@@ -37,7 +39,7 @@ const PlaceOrderScreen = ({history}) => {
     }
 
     // calculate Ordered items Price
-    cart.itemsPrice = cart.cartItems.reduce((acc, item)=> acc + item.price + item.qty, 0)
+    cart.itemsPrice = cart.cartItems.reduce((acc, item)=> acc + item.price * item.qty, 0)
      cart.shippingPrice = cart.itemsPrice > 100 ? 0 : 30
 
      cart.taxPrice = Number(0.15 *  cart.itemsPrice).toFixed(2)
@@ -104,7 +106,7 @@ const PlaceOrderScreen = ({history}) => {
                             <Col>
                             Items
                             </Col>
-                            <Col><i className='fas fa-dollar-sign' style={{color: 'green'}}></i> {cart.itemsPrice}</Col>
+                            <Col><i className='fas fa-dollar-sign' style={{color: 'green'}}></i> {Number(cart.itemsPrice).toFixed(2)}</Col>
                         </Row>
                     </ListGroup.Item>
                     <ListGroup.Item>
@@ -120,7 +122,7 @@ const PlaceOrderScreen = ({history}) => {
                             <Col>
                             Tax
                             </Col>
-                            <Col><i className='fas fa-dollar-sign' style={{color: 'green'}}></i> {cart.taxPrice}</Col>
+                            <Col><i className='fas fa-dollar-sign' style={{color: 'green'}}></i> {Number(cart.taxPrice).toFixed(2)}</Col>
                         </Row>
                     </ListGroup.Item>
                     <ListGroup.Item>
@@ -128,7 +130,7 @@ const PlaceOrderScreen = ({history}) => {
                             <Col>
                             Total Cost
                             </Col>
-                            <Col><i className='fas fa-dollar-sign' style={{color: 'green'}}></i> {cart.totalPrice}</Col>
+                            <Col><i className='fas fa-dollar-sign' style={{color: 'green'}}></i> {(cart.totalPrice).toFixed(2)}</Col>
                         </Row>
                     </ListGroup.Item>
                     <ListGroup.Item>

@@ -347,9 +347,7 @@ router.get('/profile',auth, async (req, res)=>{
  // route /api/auth/profile
 // Update User Profile
 // Access: Private
-router.put('/profile', [auth, [
-    body('password', 'Password must be at least 6 character').isLength({min: 6})
-]], async (req, res)=>{
+router.put('/profile', [auth], async (req, res)=>{
     const errors = validationResult(req)
     if(!errors.isEmpty()){
         return res.status(400).json({ errors: errors.array() })

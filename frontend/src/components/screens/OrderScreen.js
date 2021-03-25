@@ -9,15 +9,24 @@ import "react-toastify/dist/ReactToastify.css"
 import { toast } from "react-toastify"
 import Loader from '../Loader'
 import Message from '../Message'
-import { getOrderDetails} from '../../actions/orderAction'
+import { getOrderDetails, payOrder} from '../../actions/orderAction'
+import axios from 'axios'
+import {PayPalButton } from 'react-paypal-button-v2'
+import { ORDER_PAY_RESET} from '../../constants/constants'
 
 const OrderScreen = ({match}) => {
+     
+    const  [sdkReady, setSdkReady] = useState(false)
+
     const orderId = match.params.id
     const dispatch  = useDispatch()
     const cart = useSelector(state => state.cart)
 
     const orderDetails = useSelector(state => state.orderDetails)
     const {order, loading, error } = orderDetails
+
+    const orderPay = useSelector(state => state.orderPay)
+    const { loading: loadingPay, success: successPay } = orderPay
 
 
     if(!loading){
@@ -31,8 +40,37 @@ const OrderScreen = ({match}) => {
     }
 
     useEffect(()=>{
-       dispatch(getOrderDetails(orderId))
-    }, [dispatch, orderId])
+        
+        const addPayPalScript = async ()=>{
+            const {data: clientId} = await axios.get('/api/config/paypal')
+            const script = document.createElement('script')
+            script.type = 'text/javascript'
+            script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}`
+            script.async = true
+            script.onload = ()=>{
+                setSdkReady(true)
+            }
+            document.body.appendChild(script)
+        }
+
+        if( !order || successPay){
+            dispatch({type: ORDER_PAY_RESET})
+            dispatch(getOrderDetails(orderId))
+        } else if (!order.isPaid){
+         if(!window.paypal){
+             addPayPalScript() 
+         } else {
+             setSdkReady(true)
+         }
+
+        }
+    }, [dispatch, orderId, order, successPay])
+
+    const successPaymentHandler = (paymentResult) =>{
+        console.log(paymentResult)
+        dispatch(payOrder(orderId, paymentResult))
+
+    }
     
 
     return ( loading ? <Loader /> : error ? <ToastContainer position="bottom-left" autoClose={5000} 
@@ -119,7 +157,7 @@ const OrderScreen = ({match}) => {
                             <Col>
                             Tax
                             </Col>
-                            <Col><i className='fas fa-dollar-sign' style={{color: 'green'}}></i> {order.taxPrice}</Col>
+                            <Col><i className='fas fa-dollar-sign' style={{color: 'green'}}></i> {Number(order.taxPrice).toFixed(2)}</Col>
                         </Row>
                     </ListGroup.Item>
                     <ListGroup.Item>
@@ -127,9 +165,22 @@ const OrderScreen = ({match}) => {
                             <Col>
                             Total Cost
                             </Col>
-                            <Col><i className='fas fa-dollar-sign' style={{color: 'green'}}></i> {order.totalPrice}</Col>
+                            <Col><i className='fas fa-dollar-sign' style={{color: 'green'}}></i> {Number(order.totalPrice).toFixed(2)}</Col>
                         </Row>
                     </ListGroup.Item>
+
+                  { !order.isPaid && (
+                      <ListGroup.Item>
+                           { loadingPay && <Loader /> }
+                           { !sdkReady ? <Loader /> : (
+                               <PayPalButton amount={order.itemsPrice}
+                               onSuccess = {successPaymentHandler}
+                               >
+
+                               </PayPalButton>
+                           ) }
+                      </ListGroup.Item>
+                  ) }
                   
 
                 </ListGroup>

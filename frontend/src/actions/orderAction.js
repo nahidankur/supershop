@@ -5,7 +5,10 @@ import {ORDER_CREATE_FAIL, ORDER_CREATE_REQUEST, ORDER_CREATE_SUCCESS,
   ORDER_PAY_REQUEST,
   ORDER_PAY_SUCCESS,
   ORDER_PAY_FAIL,
-  ORDER_PAY_RESET
+  ORDER_PAY_RESET,
+  ORDER_LIST_MY_REQUEST,
+ORDER_LIST_MY_SUCCESS,
+ORDER_LIST_MY_FAIL
 } from '../constants/constants'
 import axios from 'axios'
 import { toast } from "react-toastify"
@@ -138,6 +141,53 @@ export const payOrder = (orderId, paymentResult) => async (dispatch, getState) =
   } catch(err){
               dispatch({
                   type:  ORDER_PAY_FAIL,
+                  payload : { }
+              })
+              const errors = err.response.data.errors
+              if(errors){
+                  errors.forEach(error =>(
+                      toast.error(error.msg, {
+                          position: "bottom-left",
+                          autoClose: 5000,
+                          hideProgressBar: false,
+                          closeOnClick: true,
+                          pauseOnHover: true,
+                          draggable: true,
+                          progress: undefined,
+                          })
+                  ) )
+              }  
+          }
+}
+
+
+
+ 
+export const listMyOrders = () => async (dispatch, getState) => {
+  try {
+    dispatch({ 
+      type: ORDER_LIST_MY_REQUEST,
+    })
+    const {
+      userLogin: { userInfo },
+    } = getState()
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    }
+
+    const { data } = await axios.get(`/api/auth/myorders`,config)
+
+    dispatch({
+      type: ORDER_LIST_MY_SUCCESS,
+      payload: data,
+    })
+
+  } catch(err){
+              dispatch({
+                  type:  ORDER_LIST_MY_FAIL,
                   payload : { }
               })
               const errors = err.response.data.errors

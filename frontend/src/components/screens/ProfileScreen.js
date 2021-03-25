@@ -11,6 +11,7 @@ import "react-toastify/dist/ReactToastify.css"
 import { toast } from "react-toastify"
 import Loader from '../Loader'
 import { USER_UPDATE_PROFILE_RESET} from '../../constants/constants'
+import { listMyOrders} from '../../actions/orderAction'
 
 const ProfileScreen = ({ location, history }) => {
     const [name, setName] = useState('')
@@ -29,6 +30,9 @@ const ProfileScreen = ({ location, history }) => {
     const userUpdateProfile = useSelector((state) => state.userUpdateProfile)
     const { success } = userUpdateProfile
 
+    const orderMyList = useSelector(state => state.orderMyList)
+    const {loading: loadingOrders, error: errorOrders, orders } = orderMyList
+
   
     useEffect(() => {
       if (!userInfo) {
@@ -37,10 +41,10 @@ const ProfileScreen = ({ location, history }) => {
         if (!user || !user.name || success) {
           dispatch({type: USER_UPDATE_PROFILE_RESET})
           dispatch(getUserDetails('profile'))
+          dispatch(listMyOrders())
        
         } else {
-         
-          setName(user.name)
+         setName(user.name)
           setEmail(user.email)
         }
       }
@@ -75,7 +79,7 @@ const ProfileScreen = ({ location, history }) => {
             closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover /> 
             <Form onSubmit={submitHandler}>
               <Form.Group controlId='name'>
-                <Form.Label>Name</Form.Label>
+                <Form.Label>Update Name</Form.Label>
                 <Form.Control
                   type='name'
                   placeholder='Enter name'
@@ -85,7 +89,7 @@ const ProfileScreen = ({ location, history }) => {
               </Form.Group>
   
               <Form.Group controlId='email'>
-                <Form.Label>Email Address</Form.Label>
+                <Form.Label>Update Email Address</Form.Label>
                 <Form.Control
                   type='email'
                   placeholder='Enter email'
@@ -95,7 +99,7 @@ const ProfileScreen = ({ location, history }) => {
               </Form.Group>
   
               <Form.Group controlId='password'>
-                <Form.Label>Password</Form.Label>
+                <Form.Label>Change Password</Form.Label>
                 <Form.Control
                   type='password'
                   placeholder='Enter password'
@@ -119,6 +123,46 @@ const ProfileScreen = ({ location, history }) => {
               </Button>
             </Form>
           
+        </Col>
+        <Col md={9}>
+          <h2> My Orders</h2>
+          {loadingOrders ? <RoundLoader />: error ? <Message variant='danger'>An Error Occured</Message> : (
+            <Table striped bordered responsive hover className='table-sm'>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>DATE</th>
+                  <th>TOTAL</th>
+                  <th>PAID</th>
+                  <th>DELIVERED</th>
+                  <th></th>
+                
+                </tr>
+              </thead>
+              <tbody>
+                {orders.map(order => (
+                  <tr key={order._id}>
+                    <td>{(order._id).toUpperCase()}</td>
+                    <td>{order.createdAt.substring(0, 10)}</td>
+                    <td>$ {order.totalPrice}</td>
+                    <td>{order.isPaid? order.paidAt.substring(0, 10) : (
+                      <i className='fas fa-times' style={{color: 'red'}}></i>
+                    )}</td>
+                     <td>{order.isDelivered? order.DeliveredAt.substring(0, 10) : (
+                      <i className='fas fa-times' style={{color: 'red'}}></i>
+                    )}</td>
+                    <td>
+                      <LinkContainer to={`/order/${order._id}`}>
+                        <Button variant='light' className='btn-sm'>Details</Button>
+                      </LinkContainer>
+                    </td>
+                    
+                  </tr>
+                ))}
+              </tbody>
+
+            </Table>
+          ) }
         </Col>
      
       </Row>
