@@ -63,13 +63,17 @@ export const login = (email, password)=>async (dispatch)=>{
 }
 
 export const logout = ()=> (dispatch)=>{
+    localStorage.removeItem('cartItems')
+    localStorage.removeItem('shippingAddress')
+    localStorage.removeItem('paymentMethod')
     localStorage.removeItem('userInfo')
     dispatch({
         type: USER_LOGOUT
     })
+    dispatch({type: CART_CLEAR_ITEMS})
     dispatch({type: ORDER_LIST_MY_RESET})
     dispatch({type: USER_DETAILS_RESET})
-    dispatch({type: CART_CLEAR_ITEMS})
+    document.location.href = '/login'
     toast.success('Logout Successful', {
         position: "bottom-left",
         autoClose: 5000,
