@@ -4,7 +4,14 @@ import {USER_LOGIN_FAIL, USER_LOGIN_REQUEST,USER_LOGIN_SUCCESS,USER_LOGOUT,
     USER_DETAILS_FAIL, USER_DETAILS_REQUEST, USER_DETAILS_SUCCESS,
     USER_UPDATE_PROFILE_FAIL, USER_UPDATE_PROFILE_REQUEST,
     ORDER_LIST_MY_RESET,USER_DETAILS_RESET,
-    USER_UPDATE_PROFILE_RESET, USER_UPDATE_PROFILE_SUCCESS, CART_CLEAR_ITEMS
+    USER_UPDATE_PROFILE_RESET, USER_UPDATE_PROFILE_SUCCESS, CART_CLEAR_ITEMS,
+    USER_LIST_REQUEST,
+USER_LIST_SUCCESS,
+USER_LIST_FAIL,
+USER_LIST_RESET,
+USER_DELETE_REQUEST,
+USER_DELETE_SUCCESS,
+USER_DELETE_FAIL
 } from '../constants/constants'
 
 import { toast } from "react-toastify"
@@ -235,6 +242,106 @@ export const getUserDetails = (id) => async (dispatch, getState) => {
     } catch(err){
                 dispatch({
                     type:  USER_UPDATE_PROFILE_FAIL,
+                    payload : { }
+                })
+                const errors = err.response.data.errors
+                if(errors){
+                    errors.forEach(error =>(
+                        toast.error(error.msg, {
+                            position: "bottom-left",
+                            autoClose: 5000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                            })
+                    ) )
+                }  
+            }
+  }
+
+  export const listUsers = () => async (dispatch, getState) => {
+    try {
+      dispatch({
+        type: USER_LIST_REQUEST,
+      })
+  
+  
+      const {
+        userLogin: { userInfo },
+      } = getState()
+  
+      const config = {
+        headers: {
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      }
+  
+  
+      const { data } = await axios.get(`/api/auth`, config)
+  
+      dispatch({
+        type: USER_LIST_SUCCESS,
+        payload: data
+      })
+    } catch(err){
+                dispatch({
+                    type:  USER_LIST_FAIL,
+                    payload : { }
+                })
+                const errors = err.response.data.errors
+                if(errors){
+                    errors.forEach(error =>(
+                        toast.error(error.msg, {
+                            position: "bottom-left",
+                            autoClose: 5000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                            })
+                    ) )
+                }  
+            }
+  }
+
+  export const deleteUser = (id) => async (dispatch, getState) => {
+    try {
+      dispatch({
+        type: USER_DELETE_REQUEST,
+      })
+  
+  
+      const {
+        userLogin: { userInfo },
+      } = getState()
+  
+      const config = {
+        headers: {
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      }
+
+   await axios.delete(`/api/auth/users/${id}`, config)
+  
+      dispatch({
+        type: USER_DELETE_SUCCESS
+      })
+
+      toast.success('user deleted successfully!', {
+        position: "bottom-left",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        })
+    } catch(err){
+                dispatch({
+                    type:  USER_DELETE_FAIL,
                     payload : { }
                 })
                 const errors = err.response.data.errors
