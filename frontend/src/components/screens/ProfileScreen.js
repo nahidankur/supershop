@@ -40,7 +40,7 @@ const ProfileScreen = ({ location, history }) => {
       } else {
         if (!user || !user.name || success) {
           dispatch({type: USER_UPDATE_PROFILE_RESET})
-          dispatch(getUserDetails('profile'))
+          dispatch(getUserDetails())
           dispatch(listMyOrders())
        
         } else {
@@ -48,7 +48,7 @@ const ProfileScreen = ({ location, history }) => {
           setEmail(user.email)
         }
       }
-    }, [dispatch, history, userInfo, user, success])
+    }, [dispatch, history, userInfo, user, success,getUserDetails])
   
     const submitHandler = (e) => {
       e.preventDefault()
@@ -144,7 +144,7 @@ const ProfileScreen = ({ location, history }) => {
                   <tr key={order._id}>
                     <td>{(order._id).toUpperCase()}</td>
                     <td>{order.createdAt.substring(0, 10)}</td>
-                    <td>$ {order.totalPrice}</td>
+                    <td>$ {(order.totalPrice).toFixed(2)}</td>
                     <td>{order.isPaid? order.paidAt.substring(0, 10) : (
                       <i className='fas fa-times' style={{color: 'red'}}></i>
                     )}</td>

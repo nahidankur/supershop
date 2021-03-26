@@ -11,7 +11,15 @@ USER_LIST_FAIL,
 USER_LIST_RESET,
 USER_DELETE_REQUEST,
 USER_DELETE_SUCCESS,
-USER_DELETE_FAIL
+USER_DELETE_FAIL,
+USER_UPDATE_REQUEST,
+USER_UPDATE_SUCCESS,
+USER_UPDATE_FAIL,
+USER_UPDATE_RESET,
+USER_DETAILSByAdmin_REQUEST,
+USER_DETAILSByAdmin_SUCCESS,
+USER_DETAILSByAdmin_FAIL,
+USER_DETAILSByAdmin_RESET
 } from '../constants/constants'
 
 import { toast } from "react-toastify"
@@ -169,7 +177,7 @@ export const getUserDetails = (id) => async (dispatch, getState) => {
       }
   
   
-      const { data } = await axios.get(`/api/auth/${id}`, config)
+      const { data } = await axios.get(`/api/auth/profile`, config)
   
       dispatch({
         type: USER_DETAILS_SUCCESS,
@@ -196,6 +204,61 @@ export const getUserDetails = (id) => async (dispatch, getState) => {
                 }  
             }
   }
+
+
+
+
+  
+export const getUserDetailsByIdByAdmin = (id) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: USER_DETAILSByAdmin_REQUEST,
+    })
+
+
+    const {
+      userLogin: { userInfo },
+    } = getState()
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`
+      },
+    }
+
+
+    const { data } = await axios.get(`/api/auth/users/${id}`, config)
+
+    dispatch({
+      type: USER_DETAILSByAdmin_SUCCESS,
+      payload: data,
+    })
+
+    dispatch({
+      type: USER_DETAILSByAdmin_RESET
+    })
+  } catch(err){
+              dispatch({
+                  type: USER_DETAILSByAdmin_FAIL,
+                  payload : { }
+              })
+              const errors = err.response.data.errors
+              if(errors){
+                  errors.forEach(error =>(
+                      toast.error(error.msg, {
+                          position: "bottom-left",
+                          autoClose: 5000,
+                          hideProgressBar: false,
+                          closeOnClick: true,
+                          pauseOnHover: true,
+                          draggable: true,
+                          progress: undefined,
+                          })
+                  ) )
+              }  
+          }
+}
+
 
   export const updateUserProfile = (user) => async (dispatch, getState) => {
     try {
@@ -342,6 +405,64 @@ export const getUserDetails = (id) => async (dispatch, getState) => {
     } catch(err){
                 dispatch({
                     type:  USER_DELETE_FAIL,
+                    payload : { }
+                })
+                const errors = err.response.data.errors
+                if(errors){
+                    errors.forEach(error =>(
+                        toast.error(error.msg, {
+                            position: "bottom-left",
+                            autoClose: 5000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                            })
+                    ) )
+                }  
+            }
+  }
+
+  export const updateUser = (user) => async (dispatch, getState) => {
+    try {
+      dispatch({
+        type: USER_UPDATE_REQUEST,
+      })
+  
+  
+      const {
+        userLogin: { userInfo },
+      } = getState()
+  
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      }
+
+   const {data} =  await axios.put(`/api/auth/users/${user._id}`, user, config)
+  
+      dispatch({
+        type: USER_UPDATE_SUCCESS
+      })
+      dispatch({
+        type: USER_DETAILS_SUCCESS,
+        payload: data
+      })
+      toast.success('User Updated Successfully!', {
+        position: "bottom-left",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        })
+    } catch(err){
+                dispatch({
+                    type:  USER_UPDATE_FAIL,
                     payload : { }
                 })
                 const errors = err.response.data.errors

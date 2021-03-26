@@ -8,44 +8,67 @@ import { register} from '../../actions/userAction'
 import { ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 import { toast } from "react-toastify"
-import {listUsers, deleteUser } from '../../actions/userAction'
+import {listProduct, deleteProduct } from '../../actions/productAction'
 import Loader from '../Loader'
 import { deleteModel } from 'mongoose'
 
-const UserListScreen = ({history}) => {
+const ProductListScreen = ({history, match}) => {
     const dispatch = useDispatch()
 
     const userList = useSelector(state => state.userList)
     const {loading, error, users } = userList
+
     const userLogin = useSelector(state => state.userLogin)
     const {userInfo } = userLogin
 
-    const userDelete = useSelector(state => state.userDelete)
-    const { success: successDelete } = userDelete
+    const productList = useSelector(state => state.productList)
+    const { products, loading: loadingProduct } = productList
+
+    const productDelete = useSelector(state => state.productDelete)
+    const {loading: laodingDelete, success: successDelete } = productDelete
 
     useEffect(()=>{
         if(userInfo && userInfo.isAdmin){
-            dispatch(listUsers())
+            dispatch(listProduct())
         } else {
             history.push('/')
         }
        
-    }, [dispatch, successDelete, history, userInfo])
+    }, [dispatch, history, userInfo,successDelete])
 
     const deleteHandler = (id) =>{
-        if(window.confirm('Are you sure want to delete this user?')){
-            dispatch(deleteUser(id))
+        if(window.confirm('Are you sure want to delete this product?')){
+         dispatch(deleteProduct(id))
+            
         }
+
+    }
+
+    const createProductHandler = ()=>{
 
     }
 
 
     return (
         <>
+        <Row className='align-items-center'>
+            <Col >
+            <h1>
+                Products
+            </h1>
+            </Col>
+            <Col className='text-right'>
+                <Button onClick={createProductHandler} className='my-3'>Create Product</Button>
+                
+              
+            </Col>
+        </Row>
            <ToastContainer position="bottom-left" autoClose={5000} 
             hideProgressBar={false} newestOnTop={false} 
             closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover /> 
         <h2>Users</h2>
+        {loadingProduct && <RoundLoader />}
+        {laodingDelete && <RoundLoader />}
         { loading? <Loader />: error ? <Message>Access Denied</Message> : (
             
              <Table striped bordered responsive hover className='table-sm'>
@@ -53,34 +76,32 @@ const UserListScreen = ({history}) => {
                <tr>
                  <th>ID</th>
                  <th>NAME</th>
-                 <th>EMAIL</th>
-                 <th>ADMIN</th>
-                 <th></th>
+                 <th>PRICE</th>
+                 <th>CATAGORY</th>
+                 <th>BRAND</th>
                  <th></th>
                </tr>
              </thead>
              <tbody>
-                 { users.map(user=> (
-                     <tr key={user._id}>
-                         <td>{user._id}</td>
-                         <td>{user.name}</td>
-                         <td>{user.email}</td>
-    
+                 { products.map(product=> (
+                     <tr key={product._id}>
+                         <td>{product._id}</td>
+                         <td>{product.name}</td>
+                         <td>$ {product.price}</td>
                          <td>
-                             {user.isAdmin? (<i className='fas fa-check' style={{color: 'green'}}></i>): (
-                                 <i className='fas fa-times' style={{color: 'red'}}></i>
-                             )}
+                            {product.category}
                          </td>
+                         <td>{product.brand}</td>
                          <td>
-                             <LinkContainer to={`/admin/user/${user._id}/edit`}>
+                             <LinkContainer to={`/admin/product/${product._id}/edit`}>
                                  <Button variant='light' className='btn-sm'>
                                      <i className='fas fa-edit'></i>
 
                                  </Button>
                              </LinkContainer>
                              {' '} {' '}
-                             <Button className='btn-sm' variant='danger' onClick={()=> deleteHandler(user._id)}>
-                                 <i className='fas fa-trash'></i>
+                             <Button className='btn-sm' variant='danger' onClick={()=> deleteHandler(product._id)}>
+                                 <i className='fas fa-trash'></i> 
                              </Button>
                          </td>
                      </tr>
@@ -94,4 +115,4 @@ const UserListScreen = ({history}) => {
     )
 }
 
-export default UserListScreen
+export default ProductListScreen
