@@ -77,7 +77,7 @@ const admin = (req, res, next) => {
     next()
   } else {
     res.status(401)
-    res.json({msg: 'No Token, Authorization Error'})
+    res.json({msg: 'Admin Permission Required! Access Denied!'})
   }
 }
 
