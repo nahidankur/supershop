@@ -1,7 +1,7 @@
 import express from 'express'
 const router= express.Router()
 import Order from '../models/orderModel.js'
-import {auth} from '../middleware/auth.js'
+import {auth, admin} from '../middleware/auth.js'
 
 
 // route /api/auth/order
@@ -96,6 +96,53 @@ router.put('/:id/pay', auth, async (req, res)=>{
     }
     
 })
+
+
+
+// route /api/auth/order/:id/deliver
+// Update Order to paid
+// Access: Private
+router.put('/:id/deliver', auth, admin, async (req, res)=>{
+    try{
+        const order  = await Order.findById(req.params.id)
+        if(order){
+           order.isDelivered = true
+           order.deliveredAt = Date.now()
+          
+           const updatedOrder = await order.save()
+           res.json(updatedOrder)
+
+        } else {
+            res.json({msg: 'Order Not Found'})
+        }
+        
+
+    } catch(err){
+        console.error(err)
+        if(err.kind === 'ObjectId'){
+            return res.status(404).json({msg: 'Order Not Found'})
+        }
+        res.status(500).json({msg : 'Server Error'})
+    }
+    
+})
+
+// route /api/auth/order
+// Get All Order
+// Access: Private
+router.get('/', auth, admin, async (req, res)=>{
+    try{
+        const orders = await Order.find({}).populate('user', 'id name')
+       res.json(orders)
+        
+
+    } catch(err){
+        console.error(err)
+        res.status(500).json({msg : 'Server Error'})
+    }
+    
+})
+
 
 
 

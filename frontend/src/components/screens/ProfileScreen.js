@@ -31,15 +31,15 @@ const ProfileScreen = ({ location, history }) => {
     const { success } = userUpdateProfile
 
     const orderMyList = useSelector(state => state.orderMyList)
-    const {loading: loadingOrders, error: errorOrders, orders } = orderMyList
+    const {loading: loadingOrders, success: successMyList, error: errorOrders, orders } = orderMyList
 
   
     useEffect(() => {
       if (!userInfo) {
         history.push('/login')
       } else {
-        if (!user || !user.name || success) {
-          dispatch({type: USER_UPDATE_PROFILE_RESET})
+        if (!user || !user.name) {
+         
           dispatch(getUserDetails())
           dispatch(listMyOrders())
        
@@ -48,7 +48,7 @@ const ProfileScreen = ({ location, history }) => {
           setEmail(user.email)
         }
       }
-    }, [dispatch, history, userInfo, user, success,getUserDetails])
+    }, [dispatch, history, userInfo, user, successMyList, success,getUserDetails, listMyOrders])
   
     const submitHandler = (e) => {
       e.preventDefault()
@@ -73,11 +73,13 @@ const ProfileScreen = ({ location, history }) => {
       <Row>
         <Col md={3}>
           <h2>User Profile</h2>
-          { loading && <Loader />}
+        
           <ToastContainer position="bottom-left" autoClose={5000} 
             hideProgressBar={false} newestOnTop={false} 
             closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover /> 
-            <Form onSubmit={submitHandler}>
+
+            {loading && loadingOrders ? <Loader /> : error ? <Message>AN Error Occured</Message> : (
+               <Form onSubmit={submitHandler}>
               <Form.Group controlId='name'>
                 <Form.Label>Update Name</Form.Label>
                 <Form.Control
@@ -122,6 +124,9 @@ const ProfileScreen = ({ location, history }) => {
                 Update
               </Button>
             </Form>
+
+            )}
+           
           
         </Col>
         <Col md={9}>
@@ -143,14 +148,16 @@ const ProfileScreen = ({ location, history }) => {
                 {orders.map(order => (
                   <tr key={order._id}>
                     <td>{(order._id).toUpperCase()}</td>
-                    <td>{order.createdAt.substring(0, 10)}</td>
+                    <td>{order.createdAt.substring(0,10)}</td>
                     <td>$ {(order.totalPrice).toFixed(2)}</td>
-                    <td>{order.isPaid? order.paidAt.substring(0, 10) : (
+                    <td>{order.isPaid? (order.paidAt.substring(0,10)) : (
                       <i className='fas fa-times' style={{color: 'red'}}></i>
                     )}</td>
-                     <td>{order.isDelivered? order.DeliveredAt.substring(0, 10) : (
+                     <td>
+                       {order.isDelivered ? (order.deliveredAt.substring(0,10)) : (
                       <i className='fas fa-times' style={{color: 'red'}}></i>
-                    )}</td>
+                    )}
+                    </td>
                     <td>
                       <LinkContainer to={`/order/${order._id}`}>
                         <Button variant='light' className='btn-sm'>Details</Button>

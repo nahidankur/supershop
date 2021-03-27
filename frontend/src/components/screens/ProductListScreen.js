@@ -8,9 +8,9 @@ import { register} from '../../actions/userAction'
 import { ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 import { toast } from "react-toastify"
-import {listProduct, deleteProduct } from '../../actions/productAction'
+import {listProduct, deleteProduct, createProduct } from '../../actions/productAction'
 import Loader from '../Loader'
-import { deleteModel } from 'mongoose'
+import {PRODUCT_CREATE_RESET } from '../../constants/constants'
 
 const ProductListScreen = ({history, match}) => {
     const dispatch = useDispatch()
@@ -27,14 +27,24 @@ const ProductListScreen = ({history, match}) => {
     const productDelete = useSelector(state => state.productDelete)
     const {loading: laodingDelete, success: successDelete } = productDelete
 
+    const productCreate = useSelector(state => state.productCreate)
+    const {loading: loadingCreate, success: successCreate, error: errorCreate,
+    product: createdProduct
+    } = productCreate
+
     useEffect(()=>{
-        if(userInfo && userInfo.isAdmin){
-            dispatch(listProduct())
+        dispatch({type: PRODUCT_CREATE_RESET})
+
+        if(!userInfo.isAdmin){
+            history.push('/login')
+        }
+        if(successCreate){
+            history.push(`/admin/product/${createdProduct._id}/edit`)
         } else {
-            history.push('/')
+            dispatch(listProduct())
         }
        
-    }, [dispatch, history, userInfo,successDelete])
+    }, [dispatch, history, userInfo,successDelete,successCreate,createdProduct])
 
     const deleteHandler = (id) =>{
         if(window.confirm('Are you sure want to delete this product?')){
@@ -45,6 +55,7 @@ const ProductListScreen = ({history, match}) => {
     }
 
     const createProductHandler = ()=>{
+  dispatch(createProduct())
 
     }
 
@@ -68,6 +79,7 @@ const ProductListScreen = ({history, match}) => {
             closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover /> 
         <h2>Users</h2>
         {loadingProduct && <RoundLoader />}
+        {loadingCreate && <RoundLoader />}
         {laodingDelete && <RoundLoader />}
         { loading? <Loader />: error ? <Message>Access Denied</Message> : (
             

@@ -9,7 +9,7 @@ import { getUserDetails,getUserDetailsByIdByAdmin, updateUser} from '../../actio
 import { ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 import { toast } from "react-toastify"
-import { USER_UPDATE_RESET} from '../../constants/constants'
+import { USER_UPDATE_RESET,USER_DETAILSByAdmin_RESET} from '../../constants/constants'
 
 const UserEditScreen = ({match, history}) => {
     const userId = match.params.id
@@ -21,15 +21,15 @@ const UserEditScreen = ({match, history}) => {
 
     const dispatch = useDispatch()
 
-    const userDetails = useSelector(state => state.userDetails)
-    const { loading, error, user} = userDetails
+    const userDetailsByAdmin = useSelector(state => state.userDetailsByAdmin)
+    const { loading, error, user} = userDetailsByAdmin
 
     const userUpdate = useSelector(state => state.userUpdate)
     const { loading : loadingUpdate, error: errorUpdate, success: successUpdate} = userUpdate
    
     useEffect(()=>{
         if(successUpdate){
-            dispatch({type: USER_UPDATE_RESET})
+            dispatch({type: USER_DETAILSByAdmin_RESET})
            history.push('/admin/userlist')
          
         } else {
@@ -41,7 +41,7 @@ const UserEditScreen = ({match, history}) => {
                  setIsAdmin(user.isAdmin)
              }
         }
-    }, [user, dispatch, userId])
+    }, [user, history, dispatch, userId,successUpdate])
 
     const onSubmit = (e)=>{
         e.preventDefault()
@@ -54,54 +54,43 @@ const UserEditScreen = ({match, history}) => {
         <Link to='/admin/userlist' className='btn btn-primary my-3' >
             Go Back
         </Link>
-        {loadingUpdate && <RoundLoader />}
-        {errorUpdate && <ToastContainer
-     position="bottom-left"
-     autoClose={5000}
-     hideProgressBar={false}
-      newestOnTop={false}
-     closeOnClick
-      rtl={false}
-      pauseOnFocusLoss
-      draggable
-      pauseOnHover/>}
-        <h1>Edit User</h1>
-        
-        { loading ? <Loader /> : error ? <Message>An Error Occured</Message>  : (
-            <Card className='p-5'>
-            <Row >
-                <Col lg='10' >
-            {loading && <RoundLoader />}
-                <Form onSubmit={e => onSubmit(e)} >
-    
-                <Form.Group >
-              <Form.Label><h5>Your Full Name</h5></Form.Label>
-              <Form.Control
-               value={name} onChange={e=> setName(e.target.value)}
-              type="text" placeholder="Enter Name"  />
-            </Form.Group>
-            <Form.Group controlId="formBasicEmail">
-              <Form.Label><h5>Email address</h5></Form.Label>
-              <Form.Control type="email" 
-              value={email} onChange={e=> setEmail(e.target.value)}
-              placeholder="Enter Email"  />
-            
-            </Form.Group>
-          
-            <Form.Group controlId="isAdmin">
-              <Form.Check
-               checked={isAdmin} onChange={e=> setIsAdmin(e.target.checked)}
-              type="checkbox" label='Is Admin'  />
-            </Form.Group>
-            <Button variant="primary" type="submit">
-              Update
-            </Button>
-          </Form>
-                </Col>
-            </Row>
-            </Card>
+        <h2>Edit User</h2>
+        { loading ? <Loader /> : error ? <Message>AN Error Occured</Message> : (
+         <Card className='p-5'>
+         <Row >
+             <Col lg='10' >
+         {loadingUpdate && <RoundLoader />}
+             <Form onSubmit={e => onSubmit(e)} >
+ 
+             <Form.Group >
+           <Form.Label><h5>Your Full Name</h5></Form.Label>
+           <Form.Control
+            value={name} onChange={e=> setName(e.target.value)}
+           type="text" placeholder="Enter Name"  />
+         </Form.Group>
+         <Form.Group controlId="formBasicEmail">
+           <Form.Label><h5>Email address</h5></Form.Label>
+           <Form.Control type="email" 
+           value={email} onChange={e=> setEmail(e.target.value)}
+           placeholder="Enter Email"  />
+         
+         </Form.Group>
+       
+         <Form.Group controlId="isAdmin">
+           <Form.Check
+            checked={isAdmin} onChange={e=> setIsAdmin(e.target.checked)}
+           type="checkbox" label='Is Admin'  />
+         </Form.Group>
+         <Button variant="primary" type="submit">
+           Update
+         </Button>
+       </Form>
+             </Col>
+         </Row>
+         </Card>
 
-        )  }
+      ) }
+  
         
       </>
     )

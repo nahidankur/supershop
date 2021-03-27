@@ -159,7 +159,7 @@ export const register = (name, email, password)=>async (dispatch)=>{
 
 }
 
-export const getUserDetails = (id) => async (dispatch, getState) => {
+export const getUserDetails = () => async (dispatch, getState) => {
     try {
       dispatch({
         type: USER_DETAILS_REQUEST,
@@ -234,9 +234,7 @@ export const getUserDetailsByIdByAdmin = (id) => async (dispatch, getState) => {
       payload: data,
     })
 
-    dispatch({
-      type: USER_DETAILSByAdmin_RESET
-    })
+
   } catch(err){
               dispatch({
                   type: USER_DETAILSByAdmin_FAIL,
