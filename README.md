@@ -9,16 +9,16 @@ Any user can choice his favourite product. He/She needs to be logged in or creat
 
 # Installation Guide
 
-### Install the dependencies (Backend)
+### First, Install the dependencies (Backend)
 
 ```bash
 npm install
 ```
 
-### Install Frontend dependencies
+### Then, Install Frontend dependencies
 
 ```bash
-cd client
+cd frontend
 npm install
 ```
 
@@ -31,7 +31,7 @@ npm run dev
 ### Build for production
 
 ```bash
-cd client
+cd frontend
 npm run build
 ```
 
@@ -49,6 +49,8 @@ Windows Cmd Prompt or Powershell
 $env:NODE_ENV="production"
 node server.js
 ```
+
+Advice: You need to put your secret environment varriable like `mongodb url`, `Jwt Secret` and `PayPal client ID` in a `.env` file in the root folder. 
 
 Check in browser on [http://localhost:5000/](http://localhost:5000/)
 
