@@ -1,9 +1,8 @@
-import React, {Fragment} from 'react'
+import React, {useEffect} from 'react'
 import { BrowserRouter as Router, Route} from 'react-router-dom'
 import Header from './components/Header'
 import Footer from './components/Footer'
 import {Container } from 'react-bootstrap'
-import setAuthToken from './utils/setAuthToken'
 import ProductScreen from './components/screens/ProductScreen'
 import HomeScreeen from './components/screens/HomeScreeen'
 import CartScreen from './components/screens/CartScreen'
@@ -20,17 +19,11 @@ import ProductListScreen from './components/screens/ProductListScreen'
 import ProductEditScreen from './components/screens/ProductEditScreen'
 import OrderListScreen from './components/screens/OrderListScreen'
 import ProductCarousel from './components/ProductCarousel'
-// if(localStorage.token){
-//   setAuthToken(localStorage.token)
-// }
-
-
 const App =()=> {
   return (
     <Router>
       <Header />
       <main>
-        {<ProductCarousel/>}
         <Container className='py-3'>
         <Route path='/admin/orderlist' component={OrderListScreen} />
         <Route path='/admin/product/:id/edit' component={ProductEditScreen} />

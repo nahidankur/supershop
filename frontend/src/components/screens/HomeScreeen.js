@@ -24,7 +24,7 @@ const HomeScreeen = ({match}) => {
       const {loading,pages, page, error, products } = productList
     return (
        <>
-       {/* {!keyword && <ProductCarousel />} */}
+       {!keyword && <ProductCarousel />}
        <ToastContainer
      position="bottom-left"
      autoClose={5000}

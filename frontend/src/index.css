@@ -45,7 +45,7 @@ h5{
   padding: 30px;
   margin: 40px;
   border-radius: 50%;
-  margin-left: 350px;
+  margin-left: 540px;
   margin-right: auto;
 
 }
@@ -54,7 +54,7 @@ h5{
 }
 
 .bg-color{
-    background-color: #30414B;
+    background-color: #3F4E59;
 }
 @media (max-width: 900px) {
   .carousel-caption h2 {
@@ -64,6 +64,6 @@ h5{
 
 @media (max-width: 900px) {
     .carousel img{
-        margin-left: 40px !important;
+        margin-left: auto !important;
     } 
 }
