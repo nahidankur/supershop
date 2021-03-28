@@ -18,7 +18,6 @@ import UserEditScreen from './components/screens/UserEditScreen'
 import ProductListScreen from './components/screens/ProductListScreen'
 import ProductEditScreen from './components/screens/ProductEditScreen'
 import OrderListScreen from './components/screens/OrderListScreen'
-import ProductCarousel from './components/ProductCarousel'
 const App =()=> {
   return (
     <Router>

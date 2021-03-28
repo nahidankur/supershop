@@ -1,7 +1,7 @@
 {
   "name": "supershop",
   "version": "1.0.0",
-  "description": "",
+  "description": "A mern ecommerce application",
   "main": "server.js",
   "type": "module",
   "scripts": {
@@ -13,7 +13,7 @@
     "data:destroy": "node backend/seeder -d"
   },
   "keywords": [],
-  "author": "",
+  "author": "Nahid Karim Ankur",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",

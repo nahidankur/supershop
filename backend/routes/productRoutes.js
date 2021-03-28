@@ -85,7 +85,7 @@ router.post('/', auth, admin, async (req, res)=>{
             brand: 'sample brand',
             category: 'sample category',
             countInStock: 0,
-            numReviews: 12,
+            numReviews: 0,
             description: 'sample description'
         })
 

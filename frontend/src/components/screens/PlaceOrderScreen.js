@@ -10,7 +10,7 @@ import { toast } from "react-toastify"
 import CheckOutStep from '../CheckOutStep'
 import Message from '../Message'
 import { createOrder} from '../../actions/orderAction'
-import { ORDER_DETAILS_RESET } from '../../constants/constants'
+import {  USER_DETAILS_RESET,ORDER_CREATE_RESET } from '../../constants/constants'
 
 const PlaceOrderScreen = ({history}) => {
     const dispatch  = useDispatch()
@@ -22,7 +22,8 @@ const PlaceOrderScreen = ({history}) => {
     useEffect(()=>{
         if(success){
           history.push(`/order/${order._id}`)
-          dispatch({type: ORDER_DETAILS_RESET})
+          dispatch({type: USER_DETAILS_RESET})
+          dispatch({type: ORDER_CREATE_RESET})
         }
     }, [success, history])
     

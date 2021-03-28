@@ -1,4 +1,4 @@
-import {ORDER_CREATE_FAIL, ORDER_CREATE_REQUEST, ORDER_CREATE_SUCCESS,
+import {ORDER_CREATE_FAIL, ORDER_CREATE_REQUEST, ORDER_CREATE_SUCCESS,ORDER_CREATE_RESET,
     ORDER_DETAILS_REQUEST,
     ORDER_DETAILS_SUCCESS,
     ORDER_DETAILS_FAIL,
@@ -39,7 +39,7 @@ export const orderCreate = (state ={}, action) => {
                 loading: false,
                 error: payload
             }
-        case ORDER_DETAILS_RESET:
+        case ORDER_CREATE_RESET:
             return {}
             default:
                 return state
