@@ -11,8 +11,10 @@ import { toast } from "react-toastify"
 import {listProduct, deleteProduct, createProduct } from '../../actions/productAction'
 import Loader from '../Loader'
 import {PRODUCT_CREATE_RESET } from '../../constants/constants'
+import Paginate from '../Paginate'
 
 const ProductListScreen = ({history, match}) => {
+    const pageNumber = match.params.pageNumber || 1
     const dispatch = useDispatch()
 
     const userList = useSelector(state => state.userList)
@@ -22,7 +24,7 @@ const ProductListScreen = ({history, match}) => {
     const {userInfo } = userLogin
 
     const productList = useSelector(state => state.productList)
-    const { products, loading: loadingProduct } = productList
+    const { products, pages, page,loading: loadingProduct } = productList
 
     const productDelete = useSelector(state => state.productDelete)
     const {loading: laodingDelete, success: successDelete } = productDelete
@@ -41,10 +43,10 @@ const ProductListScreen = ({history, match}) => {
         if(successCreate){
             history.push(`/admin/product/${createdProduct._id}/edit`)
         } else {
-            dispatch(listProduct())
+            dispatch(listProduct('', pageNumber))
         }
        
-    }, [dispatch, history, userInfo,successDelete,successCreate,createdProduct])
+    }, [dispatch, pageNumber, history, userInfo,successDelete,successCreate,createdProduct])
 
     const deleteHandler = (id) =>{
         if(window.confirm('Are you sure want to delete this product?')){
@@ -82,7 +84,7 @@ const ProductListScreen = ({history, match}) => {
         {loadingCreate && <RoundLoader />}
         {laodingDelete && <RoundLoader />}
         { loading? <Loader />: error ? <Message>Access Denied</Message> : (
-            
+            <>
              <Table striped bordered responsive hover className='table-sm'>
              <thead>
                <tr>
@@ -121,6 +123,8 @@ const ProductListScreen = ({history, match}) => {
                  )) }
              </tbody>
              </Table>
+             <Paginate isAdmin={true} page={page} pages={pages} />
+             </>
         )}
             
         </>

@@ -8,8 +8,18 @@ import { auth, admin} from '../middleware/auth.js'
 // Access: Private
 router.get('/', async (req, res)=>{
     try{
-        const products = await Product.find({})
-        res.json(products)
+        const pageSize = 10
+        const page = Number(req.query.pageNumber) || 1
+      const keyword = req.query.keyword ? {
+          name: {
+              $regex: req.query.keyword,
+              $options: 'i'
+          }
+      } : { }
+        
+        const count = await Product.countDocuments({...keyword})
+        const products = await Product.find({...keyword}).limit(pageSize).skip(pageSize * (page -1))
+        res.json({products, page, pages : Math.ceil(count / pageSize)})
 
     } catch(err){
         console.error(err)
@@ -173,6 +183,22 @@ router.post('/:id/reviews', auth, async (req, res)=>{
         console.error(err)
         res.status(500).json({msg: 'Server Error' })
     }
+})
+
+// route /api/products/top
+// Get Top rated Products
+// Access: Public
+router.get('/top/products',async (req, res)=>{
+    try{
+        const products = await Product.find({}).sort({rating: -1}).limit(3)
+        res.json(products)
+
+    } catch(err){
+        console.error(err)
+        res.status(500).json({msg: 'Server Error' })
+    }
+    
+
 })
 
 export default router

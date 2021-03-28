@@ -14,19 +14,22 @@ PRODUCT_UPDATE_RESET,
 PRODUCT_CREATE_REVIEW_REQUEST,
 PRODUCT_CREATE_REVIEW_SUCCESS,
 PRODUCT_CREATE_REVIEW_FAIL,
-PRODUCT_CREATE_REVIEW_RESET
+PRODUCT_CREATE_REVIEW_RESET,
+PRODUCT_TOP_REQUEST,
+PRODUCT_TOP_SUCCESS,
+PRODUCT_TOP_FAIL
 
 } from '../constants/constants'
 import axios from 'axios'
 import { toast } from "react-toastify"
 
-export const listProduct = ()=> async (dispatch)=>{
+export const listProduct = (keyword ='', pageNumber ='')=> async (dispatch)=>{
     try{
         dispatch({
             type: PRODUCT_LIST_REQUEST
         })
 
-        const {data} = await axios.get('/api/products')
+        const {data} = await axios.get(`/api/products?keyword=${keyword}&pageNumber=${pageNumber}`)
         dispatch({
             type: PRODUCT_LIST_SUCCESS,
             payload: data
@@ -35,8 +38,24 @@ export const listProduct = ()=> async (dispatch)=>{
     } catch (err) {
         dispatch({
             type: PRODUCT_LIST_FAIL,
-            payload : { msg: err.response.statusText, status: err.response.status }
+            payload : { }
+
+            
         })
+        const errors = err.response.data.errors
+        if(errors){
+            errors.forEach(error =>(
+                toast.error(error.msg, {
+                    position: "bottom-left",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    })
+            ) )
+        }  
 
     }
 }
@@ -60,6 +79,29 @@ export const listProductDetails = (id)=> async (dispatch)=>{
         })
 
     }
+}
+
+
+
+export const listTopProducts = ()=> async (dispatch)=>{
+  try{
+      dispatch({
+          type: PRODUCT_TOP_REQUEST
+      })
+
+      const {data} = await axios.get(`/api/products/top/products`)
+      dispatch({
+          type: PRODUCT_TOP_SUCCESS,
+          payload: data
+      })
+
+  } catch (err) {
+      dispatch({
+          type: PRODUCT_TOP_FAIL,
+          payload : { msg: err.response.statusText, status: err.response.status }
+      })
+
+  }
 }
 
 
