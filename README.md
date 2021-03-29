@@ -68,6 +68,10 @@ Nahid Karim Ankur
 
 This project is licensed under the MIT License
 
+# For testing admin dashboard, try this account:
+email: admin@gmail.com  (Admin Account)
+password: 123456
+
 
 # Note:
 The application is only made for educational perposes. Any commercial use of this application is strictly prohibited.
